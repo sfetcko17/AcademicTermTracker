@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.CourseEditPage"
+    Title="Course Editor">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="15">
+
+            <Label
+                x:Name="PageHeading"
+                Text="Add Course"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label Text="Course Title" />
+            <Entry
+                x:Name="TitleEntry"
+                Placeholder="Enter course title" />
+
+            <Label Text="Start Date" />
+            <DatePicker x:Name="StartDatePicker" />
+
+            <Label Text="End Date" />
+            <DatePicker x:Name="EndDatePicker" />
+
+            <Label Text="Course Status" />
+            <Picker
+                x:Name="StatusPicker"
+                Title="Select course status">
+                <Picker.Items>
+                    <x:String>In Progress</x:String>
+                    <x:String>Completed</x:String>
+                    <x:String>Dropped</x:String>
+                    <x:String>Plan to Take</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <Label
+                Text="Instructor Information"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <Label Text="Instructor Name" />
+            <Entry
+                x:Name="InstructorNameEntry"
+                Placeholder="Enter instructor name" />
+
+            <Label Text="Instructor Phone" />
+            <Entry
+                x:Name="InstructorPhoneEntry"
+                Placeholder="Enter instructor phone"
+                Keyboard="Default" />
+
+            <Label Text="Instructor Email" />
+            <Entry
+                x:Name="InstructorEmailEntry"
+                Placeholder="Enter instructor email"
+                Keyboard="Email" />
+
+            <Label
+                Text="Course Notes"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <Editor
+                x:Name="NotesEditor"
+                Placeholder="Enter course notes"
+                AutoSize="TextChanges"
+                HeightRequest="120" />
+
+            <Label
+                Text="Course Notifications"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Switch x:Name="StartNotificationSwitch" />
+                <Label
+                    Text="Notify on course start date"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="10">
+                <Switch x:Name="EndNotificationSwitch" />
+                <Label
+                    Text="Notify on course end date"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Button
+                Text="Save Course"
+                Clicked="OnSaveClicked" />
+
+            <Button
+                x:Name="DeleteButton"
+                Text="Delete Course"
+                BackgroundColor="#B00020"
+                TextColor="White"
+                IsVisible="False"
+                Clicked="OnDeleteClicked" />
+
+            <Button
+                Text="Cancel"
+                Clicked="OnCancelClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

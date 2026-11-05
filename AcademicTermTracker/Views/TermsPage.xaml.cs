@@ -52,6 +52,7 @@ namespace AcademicTermTracker.Views
                 $"{nameof(TermEditPage)}?termId={term.Id}");
         }
 
+        
         private async void OnTermSelected(
             object sender, SelectionChangedEventArgs e)
         {
@@ -63,11 +64,18 @@ namespace AcademicTermTracker.Views
 
             TermsCollectionView.SelectedItem = null;
 
-            // Course navigation will be connected later.
-            await DisplayAlert(
-                "Academic Term",
-                $"Selected: {term.Title}",
-                "OK");
+            try
+            {
+                await Shell.Current.GoToAsync(
+                    $"{nameof(CoursesPage)}?termId={term.Id}");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert(
+                    "Navigation Error",
+                    $"Unable to open courses: {ex.Message}",
+                    "OK");
+            }
         }
     }
 }

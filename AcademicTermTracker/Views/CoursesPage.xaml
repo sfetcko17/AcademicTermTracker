@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.CoursesPage"
+    Title="Courses">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,Auto,*"
+        RowSpacing="15">
+
+        <Label
+            Grid.Row="0"
+            x:Name="TermTitleLabel"
+            Text="Courses"
+            FontSize="26"
+            FontAttributes="Bold" />
+
+        <Label
+            Grid.Row="1"
+            x:Name="CourseCountLabel"
+            Text="0 of 6 courses"
+            FontSize="14"
+            TextColor="Gray" />
+
+        <Button
+            Grid.Row="2"
+            x:Name="AddCourseButton"
+            Text="Add Course"
+            Clicked="OnAddCourseClicked" />
+
+        <CollectionView
+            Grid.Row="3"
+            x:Name="CoursesCollectionView"
+            SelectionMode="Single"
+            SelectionChanged="OnCourseSelected">
+
+            <CollectionView.EmptyView>
+                <Label
+                    Text="No courses available for this term."
+                    HorizontalOptions="Center"
+                    Margin="0,30,0,0" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        Stroke="#CCCCCC"
+                        StrokeThickness="1"
+                        Padding="15"
+                        Margin="0,5">
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="{Binding Title}"
+                                FontSize="20"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Status}"
+                                FontSize="14" />
+
+                            <Label
+                                Text="{Binding StartDate, StringFormat='Start: {0:MMM dd, yyyy}'}" />
+
+                            <Label
+                                Text="{Binding EndDate, StringFormat='End: {0:MMM dd, yyyy}'}" />
+
+                            <Button
+                                Text="Edit Course"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditCourseClicked" />
+
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
