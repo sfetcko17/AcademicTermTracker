@@ -197,6 +197,36 @@ namespace AcademicTermTracker.Services
                         "A valid instructor email address is required.");
                 }
 
+                string phoneDigits = new string(
+                    course.InstructorPhone
+                        .Where(char.IsDigit)
+                        .ToArray());
+
+                if(phoneDigits.Length < 10 || phoneDigits.Length > 15)
+                {
+                    throw new ArgumentException(
+                        "A valid instructor phone number is required.");
+                }
+
+                string[] validStatuses =
+                {
+                    "In Progress",
+                    "Completed",
+                    "Dropped",
+                    "Plan to Take"
+                };
+
+                if (!validStatuses.Contains(
+                        course.Status,
+                        StringComparer.OrdinalIgnoreCase))
+                {
+                    throw new ArgumentException(
+                        "Please select a valid course status.");
+                }
+
+                course.Status = validStatuses.First(s =>
+                    s.Equals(course.Status, StringComparison.OrdinalIgnoreCase));
+
                 if (course.TermId <= 0 ||
                     await GetTermAsync(course.TermId) == null)
                 {
@@ -409,64 +439,67 @@ namespace AcademicTermTracker.Services
         {
             await InitializeAsync();
 
-            // Only seed an empty database.
-            int existingTerms = await _database!.Table<AcademicTerm>()
-                .CountAsync();
-
-            if (existingTerms > 0)
+            await _database!.RunInTransactionAsync(connection =>
             {
-                return;
-            }
+                // Only seed when the database contains no terms.
+                int existingTerms = connection.Table<AcademicTerm>()
+                    .Count();
 
-            // Create sample academic term.
-            AcademicTerm term = new AcademicTerm
-            {
-                Title = "Sample Academic Term",
-                StartDate = new DateTime(2026, 11, 1),
-                EndDate = new DateTime(2027, 4, 30)
-            };
+                if (existingTerms > 0)
+                {
+                    return;
+                }
 
-            await SaveTermAsync(term);
+                // Create sample academic term.
+                AcademicTerm term = new AcademicTerm
+                {
+                    Title = "Sample Academic Term",
+                    StartDate = new DateTime(2026, 11, 1),
+                    EndDate = new DateTime(2027, 4, 30)
+                };
 
-            // Create sample course.
-            Course course = new Course
-            {
-                TermId = term.Id,
-                Title = "Software Engineering",
-                StartDate = new DateTime(2026, 11, 1),
-                EndDate = new DateTime(2027, 1, 31),
-                Status = "In Progress",
-                InstructorName = "Anika Patel",
-                InstructorPhone = "555-123-4567",
-                InstructorEmail = "anika.patel@strimeuniversity.edu",
-                Notes = "Sample course for application evaluation."
-            };
+                connection.Insert(term);
 
-            await SaveCourseAsync(course);
+                // Create sample course.
+                Course course = new Course
+                {
+                    TermId = term.Id,
+                    Title = "Software Engineering",
+                    StartDate = new DateTime(2026, 11, 1),
+                    EndDate = new DateTime(2027, 1, 31),
+                    Status = "In Progress",
+                    InstructorName = "Anika Patel",
+                    InstructorPhone = "555-123-4567",
+                    InstructorEmail = "anika.patel@strimeuniversity.edu",
+                    Notes = "Sample course for application evaluation."
+                };
 
-            // Create objective assessment.
-            Assessment objective = new Assessment
-            {
-                CourseId = course.Id,
-                Title = "Software Engineering Objective Assessment",
-                Type = "Objective",
-                StartDate = new DateTime(2026, 12, 1),
-                EndDate = new DateTime(2026, 12, 15)
-            };
+                connection.Insert(course);
 
-            await SaveAssessmentAsync(objective);
+                // Create objective assessment.
+                Assessment objective = new Assessment
+                {
+                    CourseId = course.Id,
+                    Title = "Software Engineering Objective Assessment",
+                    Type = "Objective",
+                    StartDate = new DateTime(2026, 12, 1),
+                    EndDate = new DateTime(2026, 12, 15)
+                };
 
-            // Create performance assessment.
-            Assessment performance = new Assessment
-            {
-                CourseId = course.Id,
-                Title = "Software Engineering Performance Assessment",
-                Type = "Performance",
-                StartDate = new DateTime(2026, 12, 16),
-                EndDate = new DateTime(2027, 1, 15)
-            };
+                connection.Insert(objective);
 
-            await SaveAssessmentAsync(performance);
+                // Create performance assessment.
+                Assessment performance = new Assessment
+                {
+                    CourseId = course.Id,
+                    Title = "Software Engineering Performance Assessment",
+                    Type = "Performance",
+                    StartDate = new DateTime(2026, 12, 16),
+                    EndDate = new DateTime(2027, 1, 15)
+                };
+
+                connection.Insert(performance);
+            });
         }
     }
 }
