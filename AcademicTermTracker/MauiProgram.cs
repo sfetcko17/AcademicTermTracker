@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using AcademicTermTracker.Services;
+using AcademicTermTracker.Views;
 
 namespace AcademicTermTracker;
 
@@ -18,7 +20,11 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
-
+		// Register database service and app pages
+		builder.Services.AddSingleton<DatabaseService>();
+		builder.Services.AddTransient<TermsPage>();
+		builder.Services.AddTransient<TermEditPage>();
+		
 		return builder.Build();
 	}
 }

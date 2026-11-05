@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.TermsPage"
+    Title="Academic Terms">
+
+    <Grid Padding="20"
+      RowDefinitions="Auto,Auto,*"
+      RowSpacing="15">
+
+        <Label
+            Grid.Row="0"
+            Text="Academic Terms"
+            FontSize="26"
+            FontAttributes="Bold" />
+
+        <Button
+            Grid.Row="1"
+            Text="Add Academic Term"
+            Clicked="OnAddTermClicked" />
+
+        <CollectionView
+            Grid.Row="2"
+            x:Name="TermsCollectionView"
+            SelectionMode="Single"
+            SelectionChanged="OnTermSelected">
+
+            <CollectionView.EmptyView>
+                <Label
+                    Text="No academic terms available."
+                    HorizontalOptions="Center"
+                    Margin="0,30,0,0" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border
+                        Stroke="#CCCCCC"
+                        StrokeThickness="1"
+                        Padding="15"
+                        Margin="0,5">
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="{Binding Title}"
+                                FontSize="20"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding StartDate, StringFormat='Start: {0:MMM dd, yyyy}'}" />
+
+                            <Label
+                                Text="{Binding EndDate, StringFormat='End: {0:MMM dd, yyyy}'}" />
+
+                            <Button
+                                Text="Edit Term"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnEditTermClicked" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

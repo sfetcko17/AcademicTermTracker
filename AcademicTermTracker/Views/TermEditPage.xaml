@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.TermEditPage"
+    Title="Academic Term">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label
+                x:Name="PageHeading"
+                Text="Add Academic Term"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label Text="Term Title" />
+
+            <Entry
+                x:Name="TitleEntry"
+                Placeholder="Enter academic term title"
+                MaxLength="100" />
+
+            <Label Text="Start Date" />
+
+            <DatePicker
+                x:Name="StartDatePicker"
+                Format="MMM dd, yyyy" />
+
+            <Label Text="Anticipated End Date" />
+
+            <DatePicker
+                x:Name="EndDatePicker"
+                Format="MMM dd, yyyy" />
+
+            <Button
+                Text="Save Academic Term"
+                Clicked="OnSaveClicked" />
+
+            <Button
+                Text="Delete Academic Term"
+                x:Name="DeleteButton"
+                BackgroundColor="#B42318"
+                TextColor="White"
+                IsVisible="False"
+                Clicked="OnDeleteClicked" />
+
+            <Button
+                Text="Cancel"
+                Clicked="OnCancelClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
