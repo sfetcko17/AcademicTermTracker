@@ -115,7 +115,7 @@ namespace AcademicTermTracker.Views
                     "OK");
             }
         }
-
+        
         private async void OnCourseSelected(
             object sender, SelectionChangedEventArgs e)
         {
@@ -127,11 +127,18 @@ namespace AcademicTermTracker.Views
 
             CoursesCollectionView.SelectedItem = null;
 
-            // Course details navigation will be added later.
-            await DisplayAlert(
-                "Course Details",
-                $"Selected: {course.Title}",
-                "OK");
+            try
+            {
+                await Shell.Current.GoToAsync(
+                    $"{nameof(CourseDetailsPage)}?courseId={course.Id}");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert(
+                    "Navigation Error",
+                    $"Unable to open course details: {ex.Message}",
+                    "OK");
+            }
         }
     }
 }

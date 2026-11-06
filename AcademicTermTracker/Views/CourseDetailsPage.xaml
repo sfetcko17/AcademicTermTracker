@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.CourseDetailsPage"
+    Title="Course Details">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="15">
+
+            <Label
+                x:Name="CourseTitleLabel"
+                Text="Course Details"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Course Status"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="StatusLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="Start Date"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="StartDateLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="End Date"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="EndDateLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="Instructor Information"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Instructor Name"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="InstructorNameLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="Instructor Phone"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="InstructorPhoneLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="Instructor Email"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="InstructorEmailLabel"
+                Text="Not Available" />
+
+            <Label
+                Text="Course Notes"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="NotesLabel"
+                Text="No notes available." />
+
+            <Button
+                x:Name="ShareNotesButton"
+                Text="Share Course Notes"
+                Clicked="OnShareNotesClicked" />
+
+            <Button
+                Text="Edit Course"
+                Clicked="OnEditCourseClicked" />
+
+            <Button
+                Text="View Assessments"
+                Clicked="OnViewAssessmentsClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

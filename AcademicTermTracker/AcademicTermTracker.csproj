@@ -66,7 +66,6 @@
 	
 	<ItemGroup>
     	<!-- Temporarily exclude unfinished screens -->
-    	<MauiXaml Remove="Views\CourseDetailsPage.xaml" />
     	<MauiXaml Remove="Views\AssessmentsPage.xaml" />
     	<MauiXaml Remove="Views\AssessmentEditPage.xaml" />
 	</ItemGroup>
