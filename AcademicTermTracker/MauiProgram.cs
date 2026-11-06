@@ -22,6 +22,13 @@ public static class MauiProgram
 #endif
 		// Register database service and app pages
 		builder.Services.AddSingleton<DatabaseService>();
+		builder.Services.AddSingleton<DatabaseService>();
+		#if ANDROID
+		builder.Services.AddSingleton<
+    		INotificationService,
+    		AcademicTermTracker.Platforms.Android.AndroidNotificationService>();
+		#endif
+		builder.Services.AddTransient<TermsPage>();
 		builder.Services.AddTransient<TermsPage>();
 		builder.Services.AddTransient<TermEditPage>();
 		builder.Services.AddTransient<CoursesPage>();

@@ -1,4 +1,3 @@
-
 using SQLite;
 using AcademicTermTracker.Models;
 
@@ -500,6 +499,35 @@ namespace AcademicTermTracker.Services
 
                 connection.Insert(performance);
             });
+        }
+
+        // NOTIFICATION SYNCHRONIZATION       
+        public async Task SynchronizeNotificationsAsync(
+            INotificationService notificationService)
+        {
+            List<AcademicTerm> terms = await GetTermsAsync();
+
+            foreach (AcademicTerm term in terms)
+            {
+                List<Course> courses =
+                    await GetCoursesAsync(term.Id);
+
+                foreach (Course course in courses)
+                {
+                    await notificationService
+                        .ScheduleCourseNotificationsAsync(course);
+
+                    List<Assessment> assessments =
+                        await GetAssessmentsAsync(course.Id);
+
+                    foreach (Assessment assessment in assessments)
+                    {
+                        await notificationService
+                            .ScheduleAssessmentNotificationsAsync(
+                                assessment);
+                    }
+                }
+            }
         }
     }
 }

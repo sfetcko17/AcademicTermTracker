@@ -6,16 +6,18 @@ namespace AcademicTermTracker.Views
     public partial class CourseEditPage : ContentPage, IQueryAttributable
     {
         private readonly DatabaseService _databaseService;
+        private readonly INotificationService _notificationService;
 
         private int _termId;
         private int _courseId;
         private Course? _course;
 
-        public CourseEditPage(DatabaseService databaseService)
+        public CourseEditPage(DatabaseService databaseService, INotificationService notificationService)
         {
             InitializeComponent();
 
             _databaseService = databaseService;
+            _notificationService = notificationService;
 
             StartDatePicker.Date = DateTime.Today;
             EndDatePicker.Date = DateTime.Today.AddMonths(3);
@@ -137,6 +139,9 @@ namespace AcademicTermTracker.Views
                     EndNotificationSwitch.IsToggled;
 
                 await _databaseService.SaveCourseAsync(course);
+                
+                // Update Android reminders using the saved course.
+                await _notificationService.ScheduleCourseNotificationsAsync(course);
 
                 await Shell.Current.GoToAsync("..");
             }
@@ -177,6 +182,27 @@ namespace AcademicTermTracker.Views
 
             try
             {
+                if (_course == null)
+                {
+                    return;
+                }
+
+                // Retrieve assessments before deleting the course.
+                // Database deletion also removes associated assessments.
+                List<Assessment> assessments =
+                    await _databaseService.GetAssessmentsAsync(_course.Id);
+
+                // Cancel notifications for each associated assessment.
+                foreach (Assessment assessment in assessments)
+                {
+                    await _notificationService.CancelAssessmentNotificationsAsync(
+                        assessment.Id);
+                }
+
+                // Cancel notifications for the course itself.
+                await _notificationService.CancelCourseNotificationsAsync(
+                    _course.Id);
+
                 await _databaseService.DeleteCourseAsync(_course);
 
                 await Shell.Current.GoToAsync("..");

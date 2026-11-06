@@ -1,4 +1,3 @@
-
 using AcademicTermTracker.Models;
 using AcademicTermTracker.Services;
 
@@ -7,13 +6,15 @@ namespace AcademicTermTracker.Views
     public partial class TermEditPage : ContentPage, IQueryAttributable
     {
         private readonly DatabaseService _databaseService;
+        private readonly INotificationService _notificationService;
         private int _termId;
         
-        public TermEditPage(DatabaseService databaseService)
+        public TermEditPage(DatabaseService databaseService, INotificationService notificationService)
         {
             InitializeComponent();
 
             _databaseService = databaseService;
+            _notificationService = notificationService;
 
             _termId = 0;
 
@@ -138,6 +139,33 @@ namespace AcademicTermTracker.Views
 
                 if (term != null)
                 {
+                    // Retrieve all courses associated with the term.
+                    List<Course> courses =
+                        await _databaseService.GetCoursesAsync(term.Id);
+
+                    // Cancel notifications for each course
+                    // and its associated assessments.
+                    foreach (Course course in courses)
+                    {
+                        List<Assessment> assessments =
+                            await _databaseService.GetAssessmentsAsync(
+                                course.Id);
+
+                        // Cancel assessment notifications.
+                        foreach (Assessment assessment in assessments)
+                        {
+                            await _notificationService
+                                .CancelAssessmentNotificationsAsync(
+                                    assessment.Id);
+                        }
+
+                        // Cancel course notifications.
+                        await _notificationService
+                            .CancelCourseNotificationsAsync(
+                                course.Id);
+                    }
+
+                    // Delete the term and associated records.
                     await _databaseService.DeleteTermAsync(term);
                 }
 

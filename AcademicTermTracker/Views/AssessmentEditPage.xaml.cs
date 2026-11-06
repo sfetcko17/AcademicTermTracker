@@ -6,16 +6,18 @@ namespace AcademicTermTracker.Views
     public partial class AssessmentEditPage : ContentPage, IQueryAttributable
     {
         private readonly DatabaseService _databaseService;
+        private readonly INotificationService _notificationService;
 
         private int _courseId;
         private int _assessmentId;
         private Assessment? _assessment;
 
-        public AssessmentEditPage(DatabaseService databaseService)
+        public AssessmentEditPage(DatabaseService databaseService, INotificationService notificationService)
         {
             InitializeComponent();
 
             _databaseService = databaseService;
+            _notificationService = notificationService;
 
             StartDatePicker.Date = DateTime.Today;
             EndDatePicker.Date = DateTime.Today.AddDays(14);
@@ -125,6 +127,10 @@ namespace AcademicTermTracker.Views
 
                 await _databaseService.SaveAssessmentAsync(assessment);
 
+                // Update Android reminders for the saved assessment.
+                await _notificationService.ScheduleAssessmentNotificationsAsync(
+                assessment);
+
                 await Shell.Current.GoToAsync("..");
             }
             catch (ArgumentException ex)
@@ -164,6 +170,10 @@ namespace AcademicTermTracker.Views
             try
             {
                 await _databaseService.DeleteAssessmentAsync(_assessment);
+
+                // Cancel reminders associated with the deleted assessment.
+                await _notificationService.CancelAssessmentNotificationsAsync(
+                _assessment.Id);
 
                 await Shell.Current.GoToAsync("..");
             }
