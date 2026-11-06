@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AcademicTermTracker.Views.AssessmentEditPage"
+    Title="Assessment Editor">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="15">
+
+            <Label
+                x:Name="PageHeading"
+                Text="Add Assessment"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label Text="Assessment Title" />
+            <Entry
+                x:Name="TitleEntry"
+                Placeholder="Enter assessment title" />
+
+            <Label Text="Assessment Type" />
+            <Picker
+                x:Name="TypePicker"
+                Title="Select assessment type">
+                <Picker.Items>
+                    <x:String>Objective</x:String>
+                    <x:String>Performance</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <Label Text="Start Date" />
+            <DatePicker
+                x:Name="StartDatePicker" />
+
+            <Label Text="End Date" />
+            <DatePicker
+                x:Name="EndDatePicker" />
+
+            <Label
+                Text="Assessment Notifications"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Switch
+                    x:Name="StartNotificationSwitch" />
+                <Label
+                    Text="Notify on assessment start date"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="10">
+                <Switch
+                    x:Name="EndNotificationSwitch" />
+                <Label
+                    Text="Notify on assessment end date"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Button
+                Text="Save Assessment"
+                Clicked="OnSaveClicked" />
+
+            <Button
+                x:Name="DeleteButton"
+                Text="Delete Assessment"
+                BackgroundColor="#B00020"
+                TextColor="White"
+                IsVisible="False"
+                Clicked="OnDeleteClicked" />
+
+            <Button
+                Text="Cancel"
+                Clicked="OnCancelClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

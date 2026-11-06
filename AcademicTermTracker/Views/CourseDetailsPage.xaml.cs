@@ -140,16 +140,27 @@ namespace AcademicTermTracker.Views
                     "OK");
             }
         }
-
+        
         private async void OnViewAssessmentsClicked(
             object sender, EventArgs e)
         {
-            // Assessment navigation will be implemented
-            // after AssessmentsPage is ready.
-            await DisplayAlert(
-                "Assessments",
-                "The assessments screen is under development.",
-                "OK");
+            if (_course == null)
+            {
+                return;
+            }
+
+            try
+            {
+                await Shell.Current.GoToAsync(
+                    $"{nameof(AssessmentsPage)}?courseId={_course.Id}");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert(
+                    "Navigation Error",
+                    $"Unable to open assessments: {ex.Message}",
+                    "OK");
+            }
         }
     }
 }
