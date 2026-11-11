@@ -1,5 +1,6 @@
 using SQLite;
 using AcademicTermTracker.Models;
+using Microsoft.Maui.Storage;
 
 namespace AcademicTermTracker.Services
 {
@@ -10,6 +11,7 @@ namespace AcademicTermTracker.Services
         private bool _isInitialized;
         private readonly SemaphoreSlim _courseSaveLock = new(1, 1);
         private readonly SemaphoreSlim _assessmentSaveLock = new(1, 1);
+        private readonly SemaphoreSlim _sampleDataSemaphore = new(1, 1);
 
 
         // DATABASE INITIALIZATION
@@ -433,72 +435,91 @@ namespace AcademicTermTracker.Services
             return await _database!.DeleteAsync(assessment);
         }
 
-        //Sample data seeding
+        // Sample data seeding
         public async Task SeedSampleDataAsync()
         {
-            await InitializeAsync();
+            await _sampleDataSemaphore.WaitAsync();
 
-            await _database!.RunInTransactionAsync(connection =>
+            try
             {
-                // Only seed when the database contains no terms.
-                int existingTerms = connection.Table<AcademicTerm>()
-                    .Count();
+                await InitializeAsync();
 
-                if (existingTerms > 0)
+                // Sample data should only be initialized once per installation.
+                if (Preferences.Default.Get(
+                    "SampleDataInitialized", false))
                 {
                     return;
                 }
 
-                // Create sample academic term.
-                AcademicTerm term = new AcademicTerm
+                await _database!.RunInTransactionAsync(connection =>
                 {
-                    Title = "Sample Academic Term",
-                    StartDate = new DateTime(2026, 11, 1),
-                    EndDate = new DateTime(2027, 4, 30)
-                };
+                    // Preserve existing user data.
+                    int existingTerms = connection.Table<AcademicTerm>()
+                        .Count();
 
-                connection.Insert(term);
+                    if (existingTerms > 0)
+                    {
+                        return;
+                    }
 
-                // Create sample course.
-                Course course = new Course
-                {
-                    TermId = term.Id,
-                    Title = "Software Engineering",
-                    StartDate = new DateTime(2026, 11, 1),
-                    EndDate = new DateTime(2027, 1, 31),
-                    Status = "In Progress",
-                    InstructorName = "Anika Patel",
-                    InstructorPhone = "555-123-4567",
-                    InstructorEmail = "anika.patel@strimeuniversity.edu",
-                    Notes = "Sample course for application evaluation."
-                };
+                    // Create sample academic term.
+                    AcademicTerm term = new AcademicTerm
+                    {
+                        Title = "Sample Academic Term",
+                        StartDate = new DateTime(2026, 11, 1),
+                        EndDate = new DateTime(2027, 4, 30)
+                    };
 
-                connection.Insert(course);
+                    connection.Insert(term);
 
-                // Create objective assessment.
-                Assessment objective = new Assessment
-                {
-                    CourseId = course.Id,
-                    Title = "Software Engineering Objective Assessment",
-                    Type = "Objective",
-                    StartDate = new DateTime(2026, 12, 1),
-                    EndDate = new DateTime(2026, 12, 15)
-                };
+                    // Create sample course.
+                    Course course = new Course
+                    {
+                        TermId = term.Id,
+                        Title = "Software Engineering",
+                        StartDate = new DateTime(2026, 11, 1),
+                        EndDate = new DateTime(2027, 1, 31),
+                        Status = "In Progress",
+                        InstructorName = "Anika Patel",
+                        InstructorPhone = "555-123-4567",
+                        InstructorEmail = "anika.patel@strimeuniversity.edu",
+                        Notes = "Sample course for application evaluation."
+                    };
 
-                connection.Insert(objective);
+                    connection.Insert(course);
 
-                // Create performance assessment.
-                Assessment performance = new Assessment
-                {
-                    CourseId = course.Id,
-                    Title = "Software Engineering Performance Assessment",
-                    Type = "Performance",
-                    StartDate = new DateTime(2026, 12, 16),
-                    EndDate = new DateTime(2027, 1, 15)
-                };
+                    // Create objective assessment.
+                    Assessment objective = new Assessment
+                    {
+                        CourseId = course.Id,
+                        Title = "Software Engineering Objective Assessment",
+                        Type = "Objective",
+                        StartDate = new DateTime(2026, 12, 1),
+                        EndDate = new DateTime(2026, 12, 15)
+                    };
 
-                connection.Insert(performance);
-            });
+                    connection.Insert(objective);
+
+                    // Create performance assessment.
+                    Assessment performance = new Assessment
+                    {
+                        CourseId = course.Id,
+                        Title = "Software Engineering Performance Assessment",
+                        Type = "Performance",
+                        StartDate = new DateTime(2026, 12, 16),
+                        EndDate = new DateTime(2027, 1, 15)
+                    };
+
+                    connection.Insert(performance);
+                });
+
+                // Mark initialization complete only after the transaction succeeds.
+                Preferences.Default.Set("SampleDataInitialized", true);
+            }
+            finally
+            {
+                _sampleDataSemaphore.Release();
+            }
         }
 
         // NOTIFICATION SYNCHRONIZATION       

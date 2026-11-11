@@ -21,6 +21,10 @@ namespace AcademicTermTracker.Views
 
             try
             {
+                // Ensure sample data exists before loading the terms.
+                await _databaseService.SeedSampleDataAsync();
+
+                // Load academic terms after initialization completes.
                 TermsCollectionView.ItemsSource =
                     await _databaseService.GetTermsAsync();
             }

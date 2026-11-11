@@ -20,9 +20,25 @@ public partial class App : Application
     {
         base.OnStart();
 
-        _ = RequestNotificationPermissionAsync();
+        _ = InitializeApplicationAsync();
     }
 
+	private async Task InitializeApplicationAsync()
+	{
+    	try
+    	{
+        	// Create sample data only when the database has no terms.
+        	await _databaseService.SeedSampleDataAsync();
+
+        	// Request permission and synchronize notifications.
+        	await RequestNotificationPermissionAsync();
+    	}
+    	catch (Exception ex)
+    	{
+        	System.Diagnostics.Debug.WriteLine(
+            	$"Application initialization failed: {ex.Message}");
+    	}
+	}
 
 	private async Task RequestNotificationPermissionAsync()
 	{
